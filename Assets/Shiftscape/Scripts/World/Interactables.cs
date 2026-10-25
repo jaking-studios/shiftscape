@@ -76,10 +76,10 @@ namespace Shiftscape
                 transform.position += Vector3.down * 9f * Time.deltaTime;
                 transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, Time.deltaTime * 1.5f);
                 timer -= Time.deltaTime;
-                if (timer < 0) Reset();
+                if (timer < 0) ResetTile();
             }
         }
-        void Reset()
+        void ResetTile()
         {
             falling = false; timer = -1; transform.position = home; c.enabled = true;
             transform.localScale = originalScale; m.color = baseC;
