@@ -5,28 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Shiftscape</title>
 <meta name="description" content="Shiftscape — outrun the Void, flip gravity, rewind your mistakes. A 3D escape game for browser, Android and PC by JaKing Studios.">
+<meta property="og:title" content="Shiftscape">
+<meta property="og:description" content="Outrun the Void. Flip the world. Rewind your mistakes.">
+<meta property="og:image" content="media/social.jpg">
+<meta name="theme-color" content="#0d0a1f">
 <style>
-  :root{--bg:#0d0a1f;--ink:#f3f0ff;--muted:#a79fc9;--accent:#2bd9ff;--gold:#ffd34d;--void:#6b00ff;--card:#17122e}
+  :root{--bg:#0d0a1f;--ink:#f3f0ff;--muted:#a79fc9;--accent:#2bd9ff;--gold:#ffd34d;--card:#17122e;--line:#2a2350}
   *{box-sizing:border-box}
-  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#2a1a5e 0%,var(--bg) 60%);color:var(--ink);min-height:100vh}
-  main{max-width:960px;margin:0 auto;padding:48px 16px 80px}
-  h1{font-size:clamp(44px,9vw,84px);letter-spacing:-.03em;margin:0;line-height:1;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .tag{color:var(--muted);font-size:clamp(16px,2.4vw,20px);margin:12px 0 32px}
-  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
-  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:14px;font-weight:700;text-decoration:none;font-size:17px;border:2px solid transparent}
+  html{scroll-behavior:smooth;background:#0d0a1f}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#2a1a5e 0%,rgba(13,10,31,0) 60%) no-repeat,var(--bg);color:var(--ink);min-height:100vh;line-height:1.5}
+  main{max-width:1040px;margin:0 auto;padding:40px 16px 80px}
+  h1{font-size:clamp(44px,9vw,88px);letter-spacing:-.03em;margin:0;line-height:1;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{color:var(--muted);font-size:clamp(16px,2.4vw,20px);margin:12px 0 24px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 28px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:14px;font-weight:700;text-decoration:none;font-size:17px;border:2px solid transparent;transition:transform .12s}
+  .btn:hover{transform:translateY(-2px)}
   .play{background:var(--accent);color:#0a1a22}
-  .dl{background:var(--card);color:var(--ink);border-color:#2a2350}
+  .dl{background:var(--card);color:var(--ink);border-color:var(--line)}
+  .hero{border-radius:18px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px #0008;background:#000}
+  .hero video,.hero img{display:block;width:100%;height:auto}
+  .note{color:var(--muted);font-size:13px;margin:8px 4px 0}
+  h2{margin:56px 0 14px;font-size:24px}
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
-  .card{background:var(--card);border:1px solid #2a2350;border-radius:16px;padding:18px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
   .card h3{margin:0 0 6px;font-size:18px}
-  .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
-  .k{display:inline-block;background:#2a2350;border-radius:6px;padding:1px 7px;font-family:ui-monospace,monospace;font-size:13px}
-  h2{margin:48px 0 14px;font-size:22px}
-  table{width:100%;border-collapse:collapse;font-size:14px}
-  td,th{padding:8px 10px;border-bottom:1px solid #2a2350;text-align:left}
+  .card p{margin:0;color:var(--muted);font-size:14px}
+  .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+  .shots figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
+  .shots img{display:block;width:100%;height:auto}
+  .shots figcaption{padding:10px 14px;font-size:14px;color:var(--muted)}
+  .shots figcaption b{color:var(--ink)}
+  .k{display:inline-block;background:var(--line);border-radius:6px;padding:1px 7px;font-family:ui-monospace,monospace;font-size:13px}
+  table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card);border-radius:14px;overflow:hidden}
+  td,th{padding:10px 14px;border-bottom:1px solid var(--line);text-align:left}
   th{color:var(--muted);font-weight:600}
+  tr:last-child td{border-bottom:0}
   footer{color:var(--muted);font-size:13px;margin-top:56px}
   a{color:var(--accent)}
+  .btn.off{opacity:.55;border-style:dashed;cursor:not-allowed}
 </style>
 </head>
 <body>
@@ -35,11 +51,20 @@
   <p class="tag">Outrun the Void. Flip the world. Rewind your mistakes.<br>A 3D escape game built in Unity 6 — browser, Android and PC.</p>
   <div class="cta">
     <a class="btn play" href="play/">▶ Play in browser</a>
-    <a class="btn dl" href="downloads/Shiftscape.apk">Android APK</a>
-    <a class="btn dl" href="downloads/Shiftscape-Windows.zip">Windows</a>
+    <a class="btn dl" data-dl href="downloads/Shiftscape.apk">Android APK</a>
+    <a class="btn dl" data-dl href="downloads/Shiftscape-Windows.zip">Windows</a>
     <a class="btn dl" href="https://github.com/jaking-studios/shiftscape">Source on GitHub</a>
   </div>
 
+  <div class="hero">
+    <video autoplay muted loop playsinline poster="media/hero.jpg" preload="metadata">
+      <source src="media/shiftscape-preview.mp4" type="video/mp4">
+      <img src="media/shiftscape-preview.gif" alt="Shiftscape gameplay preview">
+    </video>
+  </div>
+  <p class="note">Preview footage rendered from the game's level generator and HUD design. The playable build runs in Unity.</p>
+
+  <h2>What makes it different</h2>
   <div class="grid">
     <div class="card"><h3>The Void</h3><p>A wall of nothing creeps behind you through every world. It pauses in puzzle rooms so you can think — but outside them, keep moving.</p></div>
     <div class="card"><h3>Gravity flips</h3><p>Flip pads send you running on the ceiling, past floor hazards, and back again. The camera flips with you.</p></div>
@@ -49,6 +74,18 @@
     <div class="card"><h3>Ghost race</h3><p>Your best run on each world is saved as a translucent ghost. Race it on the same seed and beat it.</p></div>
     <div class="card"><h3>Workshop &amp; Wardrobe</h3><p>Spend Shards on Pulse Boots (double jump), the Drift Cape (glide), Chrono Coil (+rewind) and more. Suits, hats and trails are cosmetic only.</p></div>
     <div class="card"><h3>Five worlds</h3><p>Sky Foundry, Frost Observatory (ice!), Neon Arcade, Sunken Temple and Clockwork Spire — unlocked with stars.</p></div>
+  </div>
+
+  <h2>Worlds &amp; rooms</h2>
+  <div class="shots">
+    <figure><img loading="lazy" src="media/hero.jpg" alt="Sky Foundry platform hop"><figcaption><b>Sky Foundry</b> — platform hops over the clouds</figcaption></figure>
+    <figure><img loading="lazy" src="media/frost.jpg" alt="Frost Observatory crumble bridge"><figcaption><b>Frost Observatory</b> — crumbling ice bridges</figcaption></figure>
+    <figure><img loading="lazy" src="media/neon.jpg" alt="Neon Arcade memory pads"><figcaption><b>Neon Arcade</b> — Simon-style memory pads</figcaption></figure>
+    <figure><img loading="lazy" src="media/temple.jpg" alt="Sunken Temple code vault"><figcaption><b>Sunken Temple</b> — find three digits, open the vault</figcaption></figure>
+    <figure><img loading="lazy" src="media/spire.jpg" alt="Clockwork Spire spinner gauntlet"><figcaption><b>Clockwork Spire</b> — spinner gauntlet</figcaption></figure>
+    <figure><img loading="lazy" src="media/gravity.jpg" alt="Gravity hall"><figcaption><b>Gravity Hall</b> — flip pads and floor hazards</figcaption></figure>
+    <figure><img loading="lazy" src="media/void.jpg" alt="Chased by the Void"><figcaption><b>The Void</b> — it's right behind you</figcaption></figure>
+    <figure><img loading="lazy" src="media/mobile.jpg" alt="Mobile touch controls"><figcaption><b>Touch controls</b> — joystick, jump, dash, use, rewind</figcaption></figure>
   </div>
 
   <h2>Controls</h2>
@@ -63,7 +100,16 @@
     <tr><td>Pause</td><td><span class="k">Esc</span></td><td>II</td></tr>
   </table>
 
-  <footer>Shiftscape is a JaKing Studios game by Jaineil Rana. Original design — not affiliated with Roblox.</footer>
+  <footer>Shiftscape is a JaKing Studios game by Jaineil Rana. Original design — not affiliated with Roblox. · <a href="https://github.com/jaking-studios/shiftscape">GitHub</a></footer>
 </main>
+<script>
+// Download buttons only work once a Unity build has published the files; until then show that honestly.
+document.querySelectorAll('a[data-dl]').forEach(function(a){
+  fetch(a.href,{method:'HEAD'}).then(function(r){ if(!r.ok) throw 0; }).catch(function(){
+    a.classList.add('off'); a.removeAttribute('href'); a.title='Available after the first Unity build is published';
+    a.textContent += ' (after first build)';
+  });
+});
+</script>
 </body>
 </html>

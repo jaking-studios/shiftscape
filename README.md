@@ -7,6 +7,25 @@
 
 **Outrun the Void. Flip the world. Rewind your mistakes.**
 
+<p align="center">
+  <img src="docs/media/shiftscape-preview.gif" alt="Shiftscape gameplay preview" width="720">
+</p>
+
+<p align="center">
+  <a href="docs/media/shiftscape-preview.mp4"><b>▶ Watch the full-quality video (MP4)</b></a>
+</p>
+
+> **About the footage:** the GIF, video and screenshots below are *pre-visualization renders* produced from the game's level generator, palettes, avatar and HUD design (see [`tools/previs`](tools/previs)). They show the intended look of each world and room type. Real in-engine captures will replace them once the first Unity build is published.
+
+## Screenshots
+
+| | |
+|:--:|:--:|
+| <img src="docs/media/hero.jpg" width="420"><br>**Sky Foundry** — platform hops | <img src="docs/media/frost.jpg" width="420"><br>**Frost Observatory** — crumbling ice bridges |
+| <img src="docs/media/neon.jpg" width="420"><br>**Neon Arcade** — memory pads | <img src="docs/media/temple.jpg" width="420"><br>**Sunken Temple** — code vault |
+| <img src="docs/media/spire.jpg" width="420"><br>**Clockwork Spire** — spinner gauntlet | <img src="docs/media/gravity.jpg" width="420"><br>**Gravity Hall** — flip pads |
+| <img src="docs/media/void.jpg" width="420"><br>**The Void** — right behind you | <img src="docs/media/mobile.jpg" width="420"><br>**Mobile** — touch controls |
+
 Shiftscape is an original 3D escape game built in **Unity 6 (6000.3)** for **browser (WebGL), Android and PC** (iOS exports too). Every run is a procedurally generated chain of rooms you have to get through before the Void — a creeping wall of nothing — catches you.
 
 > Inspired by the feel of Roblox escape/obby games, but with its own mechanics: this is not a remake of any existing game.
@@ -57,7 +76,8 @@ Assets/Shiftscape/Scripts/
   Editor/    ProjectBuilder (player settings + one-click/headless builds for every platform)
 Assets/Scenes/Main.unity   – intentionally empty; Bootstrap builds the game at runtime
 .github/workflows/build.yml – cloud builds + GitHub Pages deploy
-docs/                       – landing page for GitHub Pages
+docs/                       – website (GitHub Pages): landing page, media, placeholder /play page
+tools/previs/               – three.js pre-vis used to render the screenshots / GIF / video
 ```
 
 ### Adding content
@@ -85,7 +105,7 @@ The workflow in `.github/workflows/build.yml` builds **WebGL, Android APK and Wi
    * `UNITY_EMAIL` — your Unity account email
    * `UNITY_PASSWORD` — your Unity account password
 3. **Repo ▸ Settings ▸ Pages ▸ Source → "GitHub Actions"**.
-4. Push (or run the workflow from the Actions tab). The browser version appears at `https://jaking-studios.github.io/shiftscape/`.
+4. Push (or run the workflow from the Actions tab). The website at `https://jaking-studios.github.io/shiftscape/` deploys on every push **even before you add the Unity secrets**; the playable WebGL build replaces the placeholder `/play/` page once a Unity build succeeds.
 
 **Unity Play:** the project includes the WebGL Publisher package (`com.unity.connect.share`). In the Editor: **Publish ▸ WebGL Project ▸ Build and Publish** to put the same game on play.unity.com.
 
@@ -102,3 +122,11 @@ The workflow in `.github/workflows/build.yml` builds **WebGL, Android APK and Wi
 
 ## License
 MIT — see [LICENSE](LICENSE). "Shiftscape" and the JaKing Studios name belong to Jaineil Rana.
+
+## Re-rendering the preview media
+```
+cd tools/previs
+node render.js ./out        # needs Node + Playwright (chromium); writes stills + frames/
+ffmpeg -framerate 30 -i out/frames/%05d.png -c:v libx264 -crf 22 -pix_fmt yuv420p preview.mp4
+```
+`scene.html?world=frost&mode=gravity&frame=40` renders any world/room combination in the browser. Worlds: `foundry frost neon temple spire`; modes: `hop spinner gravity memory vault void bounce crumble`.

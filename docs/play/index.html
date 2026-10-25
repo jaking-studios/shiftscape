@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Play Shiftscape</title>
+<style>
+  :root{--bg:#0d0a1f;--ink:#f3f0ff;--muted:#a79fc9;--accent:#2bd9ff;--card:#17122e;--line:#2a2350}
+  *{box-sizing:border-box}
+  html{background:#0d0a1f}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;padding:24px 16px;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1000px 500px at 50% -10%,#2a1a5e,rgba(13,10,31,0) 60%) no-repeat,var(--bg);color:var(--ink);line-height:1.5}
+  .box{max-width:620px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;text-align:center}
+  img{width:100%;height:auto;border-radius:12px;display:block;margin-bottom:18px}
+  h1{margin:0 0 8px;font-size:28px}
+  p{color:var(--muted);margin:8px 0}
+  ol{text-align:left;color:var(--muted);padding-left:22px}
+  a{color:var(--accent)}
+  .btn{display:inline-block;margin-top:12px;background:var(--accent);color:#0a1a22;padding:12px 20px;border-radius:12px;font-weight:700;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="box">
+  <img src="../media/hero.jpg" alt="Shiftscape">
+  <h1>The browser build isn't published yet</h1>
+  <p>This page is replaced by the playable WebGL build as soon as the GitHub Actions workflow finishes a Unity build.</p>
+  <ol>
+    <li>Add the <code>UNITY_LICENSE</code>, <code>UNITY_EMAIL</code> and <code>UNITY_PASSWORD</code> secrets to the repo.</li>
+    <li>Run <b>Actions ▸ Build &amp; Publish</b>.</li>
+    <li>Reload this page.</li>
+  </ol>
+  <p>Full steps are in the <a href="https://github.com/jaking-studios/shiftscape#publishing-cloud-builds-via-github">README</a>.</p>
+  <a class="btn" href="../">← Back to Shiftscape</a>
+</div>
+</body>
+</html>

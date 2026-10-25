@@ -1,12 +1,14 @@
 # Builds Shiftscape with Unity in the cloud and publishes:
-#   • WebGL  → GitHub Pages  (play in the browser at the repo's Pages URL)
-#   • Android APK + Windows zip → workflow artifacts, and attached to a GitHub Release on tags (v1.0.0 …)
+#   • Website (docs/) → GitHub Pages. ALWAYS deployed, even if the Unity builds fail or are not set up yet.
+#   • WebGL           → /play/ on the same site (replaces the placeholder page when the build succeeds)
+#   • Android APK + Windows zip → /downloads/ on the site, and attached to a GitHub Release on tags (v1.0.0 …)
 #
-# One-time setup (repo Settings ▸ Secrets and variables ▸ Actions):
-#   UNITY_LICENSE   – contents of your Unity_lic.ulf (see README "Publishing")
-#   UNITY_EMAIL     – Unity account email
-#   UNITY_PASSWORD  – Unity account password
-# Then Settings ▸ Pages ▸ Source: "GitHub Actions".
+# One-time setup:
+#   1. Repo Settings ▸ Pages ▸ Source: "GitHub Actions".
+#   2. Repo Settings ▸ Secrets and variables ▸ Actions:
+#        UNITY_LICENSE   – contents of your Unity .ulf license file (see README "Publishing")
+#        UNITY_EMAIL     – Unity account email
+#        UNITY_PASSWORD  – Unity account password
 name: Build & Publish
 
 on:
@@ -33,11 +35,23 @@ jobs:
       matrix:
         targetPlatform: [WebGL, Android, StandaloneWindows64]
     steps:
+      - name: Check Unity secrets
+        id: gate
+        env:
+          L: ${{ secrets.UNITY_LICENSE }}
+        run: |
+          if [ -z "$L" ]; then
+            echo "::warning::UNITY_LICENSE secret is not set - skipping the Unity build. The website still deploys. See README 'Publishing'."
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - uses: actions/checkout@v4
-        with:
-          lfs: true
+        if: steps.gate.outputs.ok == 'true'
 
       - uses: actions/cache@v4
+        if: steps.gate.outputs.ok == 'true'
         with:
           path: Library
           key: Library-${{ matrix.targetPlatform }}-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
@@ -46,11 +60,13 @@ jobs:
             Library-
 
       - name: Free disk space
+        if: steps.gate.outputs.ok == 'true'
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android/sdk/ndk /opt/ghc || true
+          sudo rm -rf /usr/share/dotnet /opt/ghc /usr/local/lib/android/sdk/ndk || true
           df -h /
 
       - name: Build
+        if: steps.gate.outputs.ok == 'true'
         uses: game-ci/unity-builder@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
@@ -64,27 +80,33 @@ jobs:
           androidExportType: androidPackage
           androidTargetSdkVersion: AndroidApiLevel34
 
-      - name: Package Windows zip
-        if: matrix.targetPlatform == 'StandaloneWindows64'
-        run: cd build/StandaloneWindows64 && zip -r ../Shiftscape-Windows.zip . && cd .. && ls -la
-
-      - name: Rename APK
-        if: matrix.targetPlatform == 'Android'
-        run: find build/Android -name '*.apk' -exec mv {} build/Shiftscape.apk \; && ls -la build
+      - name: Package outputs
+        if: steps.gate.outputs.ok == 'true'
+        run: |
+          mkdir -p out
+          case "${{ matrix.targetPlatform }}" in
+            WebGL)
+              IDX=$(find build/WebGL -name index.html | head -1)
+              cp -r "$(dirname "$IDX")" out/WebGL ;;
+            Android)
+              APK=$(find build/Android -name '*.apk' | head -1)
+              cp "$APK" out/Shiftscape.apk ;;
+            StandaloneWindows64)
+              (cd build/StandaloneWindows64 && zip -r ../../out/Shiftscape-Windows.zip .) ;;
+          esac
+          find out -maxdepth 2 | head -20
 
       - uses: actions/upload-artifact@v4
+        if: steps.gate.outputs.ok == 'true'
         with:
           name: Shiftscape-${{ matrix.targetPlatform }}
-          path: |
-            build/WebGL
-            build/Shiftscape.apk
-            build/Shiftscape-Windows.zip
-          if-no-files-found: ignore
+          path: out
+          if-no-files-found: error
 
   pages:
-    name: Deploy WebGL to GitHub Pages
+    name: Deploy website to GitHub Pages
     needs: build
-    if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')
+    if: ${{ !cancelled() && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -93,27 +115,26 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: Shiftscape-WebGL
-          path: dl
-      - uses: actions/download-artifact@v4
-        with:
-          name: Shiftscape-Android
-          path: dl
-        continue-on-error: true
-      - uses: actions/download-artifact@v4
-        with:
-          name: Shiftscape-StandaloneWindows64
+          pattern: Shiftscape-*
           path: dl
         continue-on-error: true
       - name: Assemble site
         run: |
-          mkdir -p site/play site/downloads
-          cp -r docs/* site/ 2>/dev/null || true
-          WEB=$(find dl -type d -name Shiftscape -path '*WebGL*' | head -1); [ -z "$WEB" ] && WEB=$(find dl -type d -path '*WebGL*' -maxdepth 2 | head -1)
-          cp -r "$WEB"/* site/play/
-          [ -f dl/Shiftscape.apk ] && cp dl/Shiftscape.apk site/downloads/ || true
-          [ -f dl/Shiftscape-Windows.zip ] && cp dl/Shiftscape-Windows.zip site/downloads/ || true
-          ls -R site | head -50
+          mkdir -p site
+          cp -r docs/. site/
+          mkdir -p site/downloads
+          if [ -d dl/Shiftscape-WebGL/WebGL ]; then
+            rm -rf site/play && mkdir -p site/play
+            cp -r dl/Shiftscape-WebGL/WebGL/. site/play/
+            echo "WebGL build included"
+          else
+            echo "No WebGL build - keeping placeholder /play page"
+          fi
+          cp dl/Shiftscape-Android/Shiftscape.apk site/downloads/ 2>/dev/null || true
+          cp dl/Shiftscape-StandaloneWindows64/Shiftscape-Windows.zip site/downloads/ 2>/dev/null || true
+          touch site/.nojekyll
+          find site -maxdepth 2 | sort | head -60
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
@@ -128,12 +149,16 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
+          pattern: Shiftscape-*
           path: dl
-      - run: cd dl && find . -maxdepth 3 -type d -path '*WebGL*' | head -1 | xargs -I{} sh -c 'cd {} && zip -r ../../Shiftscape-WebGL.zip .' ; ls -la
+        continue-on-error: true
+      - run: |
+          [ -d dl/Shiftscape-WebGL/WebGL ] && (cd dl/Shiftscape-WebGL/WebGL && zip -r ../../Shiftscape-WebGL.zip .) || true
+          find dl -maxdepth 3 -type f | head -20
       - uses: softprops/action-gh-release@v2
         with:
           files: |
-            dl/**/Shiftscape.apk
-            dl/**/Shiftscape-Windows.zip
+            dl/Shiftscape-Android/Shiftscape.apk
+            dl/Shiftscape-StandaloneWindows64/Shiftscape-Windows.zip
             dl/Shiftscape-WebGL.zip
           generate_release_notes: true
