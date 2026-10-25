@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shiftscape</title>
+<meta name="description" content="Shiftscape — outrun the Void, flip gravity, rewind your mistakes. A 3D escape game for browser, Android and PC by JaKing Studios.">
+<style>
+  :root{--bg:#0d0a1f;--ink:#f3f0ff;--muted:#a79fc9;--accent:#2bd9ff;--gold:#ffd34d;--void:#6b00ff;--card:#17122e}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#2a1a5e 0%,var(--bg) 60%);color:var(--ink);min-height:100vh}
+  main{max-width:960px;margin:0 auto;padding:48px 16px 80px}
+  h1{font-size:clamp(44px,9vw,84px);letter-spacing:-.03em;margin:0;line-height:1;background:linear-gradient(90deg,#fff,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tag{color:var(--muted);font-size:clamp(16px,2.4vw,20px);margin:12px 0 32px}
+  .cta{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:48px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;border-radius:14px;font-weight:700;text-decoration:none;font-size:17px;border:2px solid transparent}
+  .play{background:var(--accent);color:#0a1a22}
+  .dl{background:var(--card);color:var(--ink);border-color:#2a2350}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+  .card{background:var(--card);border:1px solid #2a2350;border-radius:16px;padding:18px}
+  .card h3{margin:0 0 6px;font-size:18px}
+  .card p{margin:0;color:var(--muted);font-size:14px;line-height:1.45}
+  .k{display:inline-block;background:#2a2350;border-radius:6px;padding:1px 7px;font-family:ui-monospace,monospace;font-size:13px}
+  h2{margin:48px 0 14px;font-size:22px}
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  td,th{padding:8px 10px;border-bottom:1px solid #2a2350;text-align:left}
+  th{color:var(--muted);font-weight:600}
+  footer{color:var(--muted);font-size:13px;margin-top:56px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+  <h1>SHIFTSCAPE</h1>
+  <p class="tag">Outrun the Void. Flip the world. Rewind your mistakes.<br>A 3D escape game built in Unity 6 — browser, Android and PC.</p>
+  <div class="cta">
+    <a class="btn play" href="play/">▶ Play in browser</a>
+    <a class="btn dl" href="downloads/Shiftscape.apk">Android APK</a>
+    <a class="btn dl" href="downloads/Shiftscape-Windows.zip">Windows</a>
+    <a class="btn dl" href="https://github.com/jaking-studios/shiftscape">Source on GitHub</a>
+  </div>
+
+  <div class="grid">
+    <div class="card"><h3>The Void</h3><p>A wall of nothing creeps behind you through every world. It pauses in puzzle rooms so you can think — but outside them, keep moving.</p></div>
+    <div class="card"><h3>Gravity flips</h3><p>Flip pads send you running on the ceiling, past floor hazards, and back again. The camera flips with you.</p></div>
+    <div class="card"><h3>Rewind</h3><p>Hold <span class="k">R</span> to scrub back the last 3 seconds of your own movement. Charges refill at every checkpoint.</p></div>
+    <div class="card"><h3>Always new</h3><p>Every run is generated from a seed: platform hops, spinner gauntlets, crumbling bridges, bounce towers, memory pads, code vaults and crate puzzles.</p></div>
+    <div class="card"><h3>Daily Shift</h3><p>One seed per day for everyone. Same rooms, same shards — compare your time with friends.</p></div>
+    <div class="card"><h3>Ghost race</h3><p>Your best run on each world is saved as a translucent ghost. Race it on the same seed and beat it.</p></div>
+    <div class="card"><h3>Workshop &amp; Wardrobe</h3><p>Spend Shards on Pulse Boots (double jump), the Drift Cape (glide), Chrono Coil (+rewind) and more. Suits, hats and trails are cosmetic only.</p></div>
+    <div class="card"><h3>Five worlds</h3><p>Sky Foundry, Frost Observatory (ice!), Neon Arcade, Sunken Temple and Clockwork Spire — unlocked with stars.</p></div>
+  </div>
+
+  <h2>Controls</h2>
+  <table>
+    <tr><th></th><th>PC</th><th>Touch</th></tr>
+    <tr><td>Move</td><td><span class="k">WASD</span> / arrows</td><td>Left-side joystick</td></tr>
+    <tr><td>Look</td><td>Mouse</td><td>Drag right side</td></tr>
+    <tr><td>Jump (hold to glide)</td><td><span class="k">Space</span></td><td>JUMP</td></tr>
+    <tr><td>Dash</td><td><span class="k">Shift</span></td><td>DASH</td></tr>
+    <tr><td>Rewind</td><td><span class="k">R</span> (hold)</td><td>⟲ (hold)</td></tr>
+    <tr><td>Use (dials, levers)</td><td><span class="k">E</span></td><td>USE</td></tr>
+    <tr><td>Pause</td><td><span class="k">Esc</span></td><td>II</td></tr>
+  </table>
+
+  <footer>Shiftscape is a JaKing Studios game by Jaineil Rana. Original design — not affiliated with Roblox.</footer>
+</main>
+</body>
+</html>
