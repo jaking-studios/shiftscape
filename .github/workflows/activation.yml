@@ -1,0 +1,17 @@
+# One-time helper: produces a Unity activation file (.alf) as a downloadable artifact.
+# Run it from Actions > "Unity Activation" > Run workflow, then follow the README "Publishing" steps.
+name: Unity Activation
+on:
+  workflow_dispatch:
+jobs:
+  activation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: game-ci/unity-request-activation-file@v2
+        id: request
+        with:
+          unityVersion: 6000.3.21f1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.request.outputs.filePath }}
+          path: ${{ steps.request.outputs.filePath }}
