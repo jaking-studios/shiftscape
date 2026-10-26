@@ -99,7 +99,7 @@ tools/previs/               – three.js pre-vis used to render the screenshots 
 
 The workflow in `.github/workflows/build.yml` builds **WebGL, Android APK and Windows** on every push to `main`, deploys the WebGL build to **GitHub Pages** (`/play/`), and attaches the APK/zip to a **GitHub Release** when you push a tag like `v1.0.0`. Unity needs your own license for cloud builds — a one-time setup:
 
-1. **Get a license file.** Run the [activation workflow](https://game.ci/docs/github/activation) once (`game-ci/unity-request-manual-activation-file`), upload the `.alf` at [license.unity3d.com/manual](https://license.unity3d.com/manual), choose *Personal*, download `Unity_v6000.x.ulf`.
+1. **Get your Unity license** by following the current [game.ci activation guide](https://game.ci/docs/github/activation) (the older `unity-request-activation-file` action has been retired, so use the steps on that page).
 2. **Repo ▸ Settings ▸ Secrets and variables ▸ Actions**, add:
    * `UNITY_LICENSE` — paste the full contents of the `.ulf` file
    * `UNITY_EMAIL` — your Unity account email
